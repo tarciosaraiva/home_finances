@@ -4,13 +4,14 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+pylint = "~=2.3"
 
 [packages]
 flask = "~=1.0"
 simplejson = "~=3.16"
-pony = "*"
-flask-restplus = "*"
-psycopg2 = "*"
+pony = "~=0.7"
+flask-restplus = "~=0.12"
+psycopg2-binary = "~=2.8"
 
 [requires]
 python_version = "3.7"

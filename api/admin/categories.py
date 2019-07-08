@@ -2,7 +2,7 @@ from flask_restplus import Namespace, Resource, fields
 
 from core.database import Category
 
-ns = Namespace('categories', description='Operations for category')
+ns = Namespace('categories')
 
 @ns.route('/')
 class Categories(Resource):

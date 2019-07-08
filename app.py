@@ -2,8 +2,7 @@ from flask import Flask
 from pony.flask import Pony
 
 from core.database import db
-from apis.health import blueprint as health_api
-from apis.admin import blueprint as admin_api
+from api import blueprint as api_bp
 
 app = Flask(__name__, instance_relative_config=True)
 app.config.update(dict(
@@ -19,8 +18,7 @@ app.config.update(dict(
 
 Pony(app)
 
-app.register_blueprint(health_api, url_prefix='/api/v1')
-app.register_blueprint(admin_api, url_prefix='/api/v1/admin')
+app.register_blueprint(api_bp)
 
 # if __name__ == '__main__':
 db.bind(**app.config['PONY'])

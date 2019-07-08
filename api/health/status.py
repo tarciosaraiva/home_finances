@@ -1,14 +1,10 @@
-from flask import Blueprint
-from flask_restplus import Api, Resource, fields
+from flask_restplus import Namespace, Resource, fields
 
 from core.database import db
 
-blueprint = Blueprint('health', __name__)
-api = Api(blueprint)
+ns = Namespace('status')
 
-ns = api.namespace('health', description='Telemetry operations')
-
-@ns.route('/status')
+@ns.route('/')
 class Status(Resource):
     def get(self):
         '''Status of the service showing DB connection'''

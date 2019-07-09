@@ -1,15 +1,43 @@
 from flask_restplus import Namespace, Resource, fields
 
-from core.database import Account
+from pony.orm import db_session
+
+from api import account_model as account
+from core.database import db
 
 ns = Namespace('accounts')
 
 @ns.route('/')
-class Accounts(Resource):
+class AccountList(Resource):
+    @ns.marshal_list_with(account)
     def get(self):
         '''List all accounts'''
-        return Bucket.select()
+        response = []
+        accounts = db.Account.select().order_by(db.Account.name)
 
+        for a in accounts:
+            response.append(a)
+
+        return response
+
+    @db_session
+    @ns.expect(account)
+    @ns.marshal_with(account, code=201)
     def post(self):
         '''Create an account'''
-        return True
+        account_obj = db.Account(**ns.payload)
+        return account_obj, 201
+
+@ns.response(404, 'Account not found')
+@ns.param('id', 'The Account identifier')
+class AccountItem(Resource):
+    @ns.marshal_with(account)
+    def get(self, id):
+        '''Get a single Bucket'''
+        return db.Account[id]
+
+    @db_session
+    @ns.response(204, 'Account deleted')
+    def delete(self, id):
+        '''Delete a account'''
+        db.Account[id].delete()

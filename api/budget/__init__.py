@@ -1,12 +1,12 @@
 from flask_restplus import Namespace
 
 from .budgets import BudgetItem, BudgetList
-# from .items import ItemsItem, ItemsList
+from .budget_items import BudgetItemItem, BudgetItemList
 
-ns = Namespace('budget', description='Budget operations')
+ns = Namespace('budgets', description='Budget operations')
 
 ns.add_resource(BudgetItem, '/<int:id>')
 ns.add_resource(BudgetList, '/')
 
-# ns.add_resource(AccountItem, '/account/<int:id>')
-# ns.add_resource(AccountList, '/accounts')
+ns.add_resource(BudgetItemItem, '/<int:budget_id>/items/<int:id>')
+ns.add_resource(BudgetItemList, '/<int:budget_id>/items')

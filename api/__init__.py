@@ -29,7 +29,6 @@ item_model = api.model('item', {
     'bucket': fields.Nested(bucket_model, required=True),
     'type': fields.String(required=True),
     'frequency': fields.String(required=True),
-    'amount': fields.Float(required=True),
 })
 
 budget_model = api.model('budget', {

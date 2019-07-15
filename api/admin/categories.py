@@ -1,5 +1,5 @@
 from flask_restplus import Namespace, Resource, fields
-from pony.orm import db_session
+from pony.orm import db_session, commit
 
 from api import category_model as category
 from core.database import db
@@ -25,8 +25,9 @@ class CategoryList(Resource):
     def post(self):
         '''Create a category'''
         category_obj = db.Category(**ns.payload)
+        commit()
         return category_obj, 201
-        
+
 
 @ns.response(404, 'Category not found')
 @ns.param('id', 'The Category identifier')
@@ -35,6 +36,16 @@ class CategoryItem(Resource):
     def get(self, id):
         '''Get a single Category'''
         return db.Category[id]
+
+    @db_session
+    @ns.expect(category)
+    @ns.marshal_with(category, code=204)
+    def put(self, id):
+        '''Update a single Category'''
+        category = db.Category[id]
+        category.set(**ns.payload)
+        commit()
+        return category, 204
 
     @db_session
     @ns.response(204, 'Category deleted')

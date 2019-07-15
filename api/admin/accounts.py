@@ -1,6 +1,5 @@
 from flask_restplus import Namespace, Resource, fields
-
-from pony.orm import db_session
+from pony.orm import db_session, commit
 
 from api import account_model as account
 from core.database import db
@@ -26,15 +25,27 @@ class AccountList(Resource):
     def post(self):
         '''Create an account'''
         account_obj = db.Account(**ns.payload)
+        commit
         return account_obj, 201
+
 
 @ns.response(404, 'Account not found')
 @ns.param('id', 'The Account identifier')
 class AccountItem(Resource):
     @ns.marshal_with(account)
     def get(self, id):
-        '''Get a single Bucket'''
+        '''Get a single Account'''
         return db.Account[id]
+
+    @db_session
+    @ns.expect(account)
+    @ns.marshal_with(account, code=204)
+    def put(self, id):
+        '''Update a single Account'''
+        account = db.Account[id]
+        account.set(**ns.payload)
+        commit()
+        return account, 204
 
     @db_session
     @ns.response(204, 'Account deleted')

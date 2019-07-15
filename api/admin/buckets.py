@@ -1,5 +1,5 @@
 from flask_restplus import Namespace, Resource, fields
-from pony.orm import db_session
+from pony.orm import db_session, commit
 
 from api import bucket_model as bucket
 from core.database import db
@@ -25,8 +25,9 @@ class BucketList(Resource):
     def post(self):
         '''Create a bucket'''
         bucket_obj = db.Bucket(**ns.payload)
+        commit()
         return bucket_obj, 201
-        
+
 
 @ns.response(404, 'Bucket not found')
 @ns.param('id', 'The Bucket identifier')
@@ -35,6 +36,16 @@ class BucketItem(Resource):
     def get(self, id):
         '''Get a single Bucket'''
         return db.Bucket[id]
+
+    @db_session
+    @ns.expect(bucket)
+    @ns.marshal_with(bucket, code=204)
+    def put(self, id):
+        '''Update a single Bucket'''
+        bucket = db.Bucket[id]
+        bucket.set(**ns.payload)
+        commit()
+        return bucket, 204
 
     @db_session
     @ns.response(204, 'Bucket deleted')

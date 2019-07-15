@@ -1,6 +1,5 @@
 from flask_restplus import Namespace, Resource, fields
-
-from pony.orm import db_session
+from pony.orm import db_session, commit
 
 from api import item_model as item
 from core.database import db
@@ -27,7 +26,9 @@ class BudgetItemList(Resource):
     def post(self, budget_id):
         '''Create an item'''
         item_obj = db.Item(**ns.payload)
+        commit()
         return item_obj, 201
+
 
 @ns.response(404, 'Item not found')
 @ns.param('budget_id', 'The Budget identifier')

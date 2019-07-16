@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_cors import CORS
 from pony.flask import Pony
 
 from core.database import db
@@ -16,6 +17,7 @@ app.config.update(dict(
     )
 ))
 
+CORS(app)
 Pony(app)
 
 app.register_blueprint(api_bp)

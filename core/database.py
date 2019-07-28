@@ -18,7 +18,7 @@ class Budget(db.Entity):
 class Bucket(db.Entity):
     _table_ = 'buckets'
     id = PrimaryKey(int, auto=True)
-    name = Required(str)
+    name = Required(str, unique=True)
     threshold = Optional(float)
     items = Set('Item')
 
@@ -26,7 +26,7 @@ class Bucket(db.Entity):
 class Category(db.Entity):
     _table_ = 'categories'
     id = PrimaryKey(int, auto=True)
-    name = Required(str)
+    name = Required(str, unique=True)
     items = Set('Item', cascade_delete=False)
 
 
@@ -37,13 +37,14 @@ class Account(db.Entity):
     name = Required(str)
     number = Optional(str)
     branch = Optional(str)
+    composite_key(number, branch)
 
 
 class User(db.Entity):
     _table_ = 'users'
     id = PrimaryKey(int, auto=True)
     name = Required(str)
-    email = Required(str)
+    email = Required(str, unique=True)
     password = Required(str)
     budgets = Set(Budget)
 
